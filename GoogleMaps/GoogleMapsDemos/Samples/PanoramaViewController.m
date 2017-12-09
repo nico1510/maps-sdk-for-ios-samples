@@ -24,6 +24,8 @@
 static CLLocationCoordinate2D kPanoramaNear = {40.761388, -73.978133};
 static CLLocationCoordinate2D kMarkerAt = {40.761455, -73.977814};
 
+CLLocationCoordinate2D userPanoLocation = {65.6829, -17.5489};
+
 @interface PanoramaViewController () <GMSPanoramaViewDelegate>
 @end
 
@@ -31,6 +33,9 @@ static CLLocationCoordinate2D kMarkerAt = {40.761455, -73.977814};
   GMSPanoramaView *_view;
   BOOL _configured;
   UILabel *_statusLabel;
+    UIButton *_moveButton1;
+    UIButton *_moveButton2;
+    UIButton *_moveButton3;
 }
 
 - (void)viewDidLoad {
@@ -50,7 +55,39 @@ static CLLocationCoordinate2D kMarkerAt = {40.761455, -73.977814};
   _statusLabel.textColor = [UIColor whiteColor];
   _statusLabel.textAlignment = NSTextAlignmentCenter;
 
+  _moveButton1 = [[UIButton alloc] initWithFrame:CGRectMake(0, 30, 0, 30)];
+  _moveButton1.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  _moveButton1.backgroundColor = [UIColor greenColor];
+  [_moveButton1 setTitle:@"1st Move" forState:UIControlStateNormal];
+  [_moveButton1 addTarget:self action:@selector(moveToUserPanorama) forControlEvents:UIControlEventTouchUpInside];
+
+  _moveButton2 = [[UIButton alloc] initWithFrame:CGRectMake(0, 60, 0, 30)];
+  _moveButton2.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  _moveButton2.backgroundColor = [UIColor purpleColor];
+  [_moveButton2 setTitle:@"2nd Move" forState:UIControlStateNormal];
+  [_moveButton2 addTarget:self action:@selector(moveToGooglePanorama) forControlEvents:UIControlEventTouchUpInside];
+
+  _moveButton3 = [[UIButton alloc] initWithFrame:CGRectMake(0, 90, 0, 30)];
+  _moveButton3.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+  _moveButton3.backgroundColor = [UIColor redColor];
+  [_moveButton3 setTitle:@"3rd Move" forState:UIControlStateNormal];
+  [_moveButton3 addTarget:self action:@selector(moveToUserPanorama) forControlEvents:UIControlEventTouchUpInside];
+
+
   [_view addSubview:_statusLabel];
+  [_view addSubview:_moveButton1];
+  [_view addSubview:_moveButton2];
+  [_view addSubview:_moveButton3];
+}
+
+-(void)moveToUserPanorama
+{
+  [_view moveNearCoordinate:userPanoLocation radius:100];
+}
+
+-(void)moveToGooglePanorama
+{
+    [_view moveNearCoordinate:kPanoramaNear radius:100];
 }
 
 #pragma mark - GMSPanoramaDelegate
@@ -83,6 +120,11 @@ static CLLocationCoordinate2D kMarkerAt = {40.761455, -73.977814};
 
 - (void)panoramaViewDidFinishRendering:(GMSPanoramaView *)panoramaView {
   _statusLabel.alpha = 0.0f;
+}
+
+- (void) panoramaView:(GMSPanoramaView *)panoramaView error:(NSError *)error onMoveNearCoordinate:(CLLocationCoordinate2D)coordinate {
+    _statusLabel.alpha = 0.8f;
+    _statusLabel.text = @"ERROR";
 }
 
 @end
